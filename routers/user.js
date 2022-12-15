@@ -1,10 +1,16 @@
+const bcrypt = require("bcrypt");
+const { toJWT } = require("../auth/jwt");
+
+const { SALT_ROUNDS } = require("../config/constants");
+const User = require("../models/").user;
 const { Router } = require("express");
 const router = new Router
-const User = require("../models").user
+
 
 router.post("/login", async (req, res, next) => {
     try {
         const { email, password } = req.body;
+        console.log(email, password, "email, password")
 
         if (!email || !password) {
             return res
@@ -12,17 +18,19 @@ router.post("/login", async (req, res, next) => {
                 .send({ message: "Please provide both email and password" });
         }
 
-        const user = await User.findOne({ where: { password } });
+        const user = await User.findOne({ where: {email} });
+        console.log(user)
 
-        if (!user || !password) {
+        if (!user || !bcrypt.compareSync(password, user.password)) {
             return res.status(400).send({
                 message: "User with that email not found or password incorrect",
             });
         }
 
         delete user.dataValues["password"]; // don't send back the password hash
-        
-        return res.status(200).send( user.dataValues);
+        const token = toJWT({  userId: user.id});
+
+        return res.status(200).send({ token, user: user.dataValues });
     } catch (error) {
         console.log(error);
         return res.status(400).send({ message: "Something went wrong, sorry" });
@@ -43,12 +51,13 @@ router.post("/signup", async (req, res) => {
             firstName,
             lastName,
             email,
-            password,
+            password: bcrypt.hashSync(password, SALT_ROUNDS),
             role
         });
 
         delete newUser.dataValues["password"]; // don't send back the password hash
-        res.status(201).json(newUser.dataValues );
+        const token = toJWT({ userId: newUser.id });
+        res.status(201).json({ token, user: newUser.dataValues });
 
     } catch (error) {
         if (error.name === "SequelizeUniqueConstraintError") {
@@ -56,7 +65,7 @@ router.post("/signup", async (req, res) => {
                 .status(400)
                 .send({ message: "There is an existing account with this email" });
         }
-console.log(error)
+        console.log(error)
         return res.status(400).send({ message: "Something went wrong, sorry" });
     }
 });
