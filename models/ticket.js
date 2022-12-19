@@ -11,13 +11,13 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       ticket.hasMany(models.comment, { foreignKey: 'ticketId' })
-      ticket.belongsTo(models.user, { foreignKey: 'reportedBy' })
-      ticket.belongsTo(models.user, { foreignKey: 'assignedTo' })
+      ticket.belongsTo(models.user, { as: 'reporter', foreignKey: 'reportedBy' })
+      ticket.belongsTo(models.user, { as: 'assigned', foreignKey: 'assignedTo'  })
     }
   }
   ticket.init({
     subject: { type: DataTypes.STRING, allowNull: false },
-    description: { type: DataTypes.STRING, allowNull: false },
+    description: { type: DataTypes.TEXT, allowNull: false },
     closedAt: DataTypes.DATE,
     severity: { type: DataTypes.STRING, allowNull: false, defaultValue: "Low" },
     state: { type: DataTypes.STRING, allowNull: false, defaultValue: "Open" },

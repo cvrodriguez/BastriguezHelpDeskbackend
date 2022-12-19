@@ -1,6 +1,8 @@
 
 const { Router } = require("express");
 const Ticket = require("../models").ticket;
+const User = require("../models").user;
+
 
 const router = new Router();
 
@@ -32,6 +34,30 @@ router.post('/tickets', async(req, res,next)=>{
           const response = await Ticket.created({
             subject, description, severity, state
           })
+
+          res.status(201).json(response);
+        
+    } catch (error) {
+        console.log(error)
+    }
+})
+
+router.get('/tickets/:id', async(req, res,next)=>{
+    try {
+        const id = req.params.id
+
+        if (!id){
+          return res.status(404)
+              .send({ message: "Ticket do not found" });
+          }
+
+          const response = await Ticket.findByPk(id,{include: [{
+            model: User,
+            as: 'reporter'
+          },{
+            model: User,
+            as: 'assigned'
+          }]})
 
           res.status(201).json(response);
         
