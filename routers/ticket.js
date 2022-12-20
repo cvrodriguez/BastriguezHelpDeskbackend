@@ -2,11 +2,12 @@
 const { Router } = require("express");
 const Ticket = require("../models").ticket;
 const User = require("../models").user;
+const Comment = require("../models").comment;
 
 
 const router = new Router();
 
-router.get('/tickets', async(req, res, next)=>{
+router.get('/tickets', async (req, res, next) => {
     try {
         const response = await Ticket.findAll()
 
@@ -15,52 +16,60 @@ router.get('/tickets', async(req, res, next)=>{
         }
 
         res.json(response)
-        
+
     } catch (error) {
         console.log(error)
     }
 })
 
-router.post('/tickets', async(req, res,next)=>{
+router.post('/tickets', async (req, res, next) => {
     try {
-        const {subject,description,severity,state,assignedTo}= req.body
+        const { subject, description, severity, state, assignedTo } = req.body
 
         if (!subject || !description || !assignedTo) {
             return res
-              .status(400)
-              .send({ message: "Please provide required data" });
-          }
+                .status(400)
+                .send({ message: "Please provide required data" });
+        }
 
-          const response = await Ticket.created({
+        const response = await Ticket.created({
             subject, description, severity, state
-          })
+        })
 
-          res.status(201).json(response);
-        
+        res.status(201).json(response);
+
     } catch (error) {
         console.log(error)
     }
 })
 
-router.get('/tickets/:id', async(req, res,next)=>{
+router.get('/tickets/:id', async (req, res, next) => {
     try {
         const id = req.params.id
 
-        if (!id){
-          return res.status(404)
-              .send({ message: "Ticket do not found" });
-          }
+        if (!id) {
+            return res.status(404)
+                .send({ message: "Ticket do not found" });
+        }
 
-          const response = await Ticket.findByPk(id,{include: [{
-            model: User,
-            as: 'reporter'
-          },{
-            model: User,
-            as: 'assigned'
-          }]})
+        const response = await Ticket.findByPk(id, {
+            include: [
+                {
+                    model: User,
+                    as: 'reporter'
+                }, {
+                    model: User,
+                    as: 'assigned'
+                },
+                {
+                    model: Comment
+                },
 
-          res.status(201).json(response);
-        
+            ]
+        })
+
+        res.status(201).json(response);
+
     } catch (error) {
         console.log(error)
     }
