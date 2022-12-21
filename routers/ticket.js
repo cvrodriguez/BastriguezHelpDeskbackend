@@ -51,7 +51,6 @@ router.get('/tickets/:id', async (req, res, next) => {
             return res.status(404)
                 .send({ message: "Ticket do not found" });
         }
-
         const response = await Ticket.findByPk(id, {
             include: [
                 {
@@ -64,7 +63,6 @@ router.get('/tickets/:id', async (req, res, next) => {
                 {
                     model: Comment
                 },
-
             ]
         })
 
@@ -72,6 +70,28 @@ router.get('/tickets/:id', async (req, res, next) => {
 
     } catch (error) {
         console.log(error)
+    }
+})
+
+router.patch('/tickets/:id', async(req, res, next) =>{
+    try {
+        const id = req.params.id
+        const {subject, severity,state, description} = req.body
+
+        if (!id) {
+            return res.status(404)
+                .send({ message: "Ticket do not found" });
+        }
+
+        const ticket = await Ticket.findByPk(id)
+        const response  = await ticket.update({
+            subject, severity,state, description
+        })
+        
+        res.json(response)
+    } catch (error) {
+        console.log(error)
+            res.status(500)
     }
 })
 
