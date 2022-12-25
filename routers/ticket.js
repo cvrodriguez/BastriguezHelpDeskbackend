@@ -24,16 +24,16 @@ router.get('/tickets', async (req, res, next) => {
 
 router.post('/tickets', async (req, res, next) => {
     try {
-        const { subject, description, severity, state, assignedTo } = req.body
+        const { subject, description, severity, state, assignedTo, reportedBy } = req.body
 
-        if (!subject || !description || !assignedTo) {
+        if (!subject || !description || !assignedTo || !reportedBy ) {
             return res
                 .status(400)
                 .send({ message: "Please provide required data" });
         }
 
-        const response = await Ticket.created({
-            subject, description, severity, state
+        const response = await Ticket.create({
+            subject, description, severity, state, assignedTo, reportedBy
         })
 
         res.status(201).json(response);
