@@ -26,7 +26,7 @@ router.post('/tickets', async (req, res, next) => {
     try {
         const { subject, description, severity, state, assignedTo, reportedBy } = req.body
 
-        if (!subject || !description || !assignedTo || !reportedBy ) {
+        if (!subject || !description || !assignedTo || !reportedBy || !assignedTo || !reportedBy ) {
             return res
                 .status(400)
                 .send({ message: "Please provide required data" });
