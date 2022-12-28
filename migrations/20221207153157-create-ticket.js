@@ -13,6 +13,14 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING
       },
+      reportedBy: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
+      assignedTo: {
+        allowNull: false,
+        type: Sequelize.STRING
+      },
       description: {
         allowNull: false,
         type: Sequelize.STRING

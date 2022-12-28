@@ -8,7 +8,7 @@ const router = new Router();
 router.post('/tickets/:ticketId/comments', async (req, res, next) => {
     try {
         const ticketId = req.params.ticketId
-        const { comment } = req.body
+        const { comment, userId } = req.body
 
         const ticket = await Ticket.findByPk(ticketId)
         
@@ -21,7 +21,7 @@ router.post('/tickets/:ticketId/comments', async (req, res, next) => {
             return
         }
         const response = await Comment.create({
-            ticketId, comment
+            ticketId, comment, userId
             
         }) 
         res.json(response)

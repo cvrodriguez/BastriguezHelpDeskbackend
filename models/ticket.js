@@ -11,8 +11,6 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       ticket.hasMany(models.comment, { foreignKey: 'ticketId' })
-      ticket.belongsTo(models.user, { as: 'reporter', foreignKey: 'reportedBy' })
-      ticket.belongsTo(models.user, { as: 'assigned', foreignKey: 'assignedTo'  })
     }
   }
   ticket.init({
@@ -21,9 +19,13 @@ module.exports = (sequelize, DataTypes) => {
     closedAt: DataTypes.DATE,
     severity: { type: DataTypes.STRING, allowNull: false, defaultValue: "Low" },
     state: { type: DataTypes.STRING, allowNull: false, defaultValue: "Open" },
+    reportedBy: {type: DataTypes.STRING, allowNull: false},
+    assignedTo: {type:  DataTypes.STRING, allowNull: false}
   }, {
     sequelize,
     modelName: 'ticket',
   });
   return ticket;
 };
+
+
