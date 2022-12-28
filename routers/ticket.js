@@ -52,18 +52,7 @@ router.get('/tickets/:id', async (req, res, next) => {
                 .send({ message: "Ticket do not found" });
         }
         const response = await Ticket.findByPk(id, {
-            include: [
-                {
-                    model: User,
-                    as: 'reporter'
-                }, {
-                    model: User,
-                    as: 'assigned'
-                },
-                {
-                    model: Comment
-                },
-            ]
+            include: [{model: Comment}]
         })
 
         res.status(201).json(response);
