@@ -1,6 +1,6 @@
 {
   "development": {
-    "url": "postgres://uncjgrmi:DL6klu56hZm5tpytJNhQz1DElZNCRDcT@surus.db.elephantsql.com/uncjgrmi",
+    "url": "",
     "dialect": "postgres"
   },
   "test": {
