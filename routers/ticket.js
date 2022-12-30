@@ -26,7 +26,7 @@ router.post('/tickets', async (req, res, next) => {
     try {
         const { subject, description, severity, state, assignedTo, reportedBy } = req.body
 
-        if (!subject || !description || !assignedTo || !reportedBy || !assignedTo || !reportedBy ) {
+        if (!subject || !description || !assignedTo || !reportedBy || !assignedTo || !reportedBy) {
             return res
                 .status(400)
                 .send({ message: "Please provide required data" });
@@ -52,7 +52,7 @@ router.get('/tickets/:id', async (req, res, next) => {
                 .send({ message: "Ticket do not found" });
         }
         const response = await Ticket.findByPk(id, {
-            include: [{model: Comment}]
+            include: [{ model: Comment }]
         })
 
         res.status(201).json(response);
@@ -62,10 +62,10 @@ router.get('/tickets/:id', async (req, res, next) => {
     }
 })
 
-router.patch('/tickets/:id', async(req, res, next) =>{
+router.patch('/tickets/:id', async (req, res, next) => {
     try {
         const id = req.params.id
-        const {subject, severity,state, description} = req.body
+        const { subject, severity, state, description, reportedBy, assignedTo } = req.body
 
         if (!id) {
             return res.status(404)
@@ -73,14 +73,15 @@ router.patch('/tickets/:id', async(req, res, next) =>{
         }
 
         const ticket = await Ticket.findByPk(id)
-        const response  = await ticket.update({
-            subject, severity,state, description
+        const response = await ticket.update({
+            subject, severity, state,
+            description, reportedBy, assignedTo
         })
-        
+
         res.json(response)
     } catch (error) {
         console.log(error)
-            res.status(500)
+        res.status(500)
     }
 })
 
