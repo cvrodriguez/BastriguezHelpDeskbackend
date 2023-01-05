@@ -5,6 +5,8 @@ const router = new Router
 
 
 const auth0ApiUrl = 'https://dev-3ugne2hhrxoqqfdi.us.auth0.com/api/v2';
+const connection ="Username-Password-Authentication"
+const headers= {"Accept-Encoding": "*", authorization: `Bearer ${TOKEN_AUTH0}`,'Content-Type': 'application/json' }
 
 const options = {
     method: 'GET',
@@ -12,6 +14,7 @@ const options = {
     params: { search_engine: 'v3' },
     headers: { "Accept-Encoding": "*", authorization: `Bearer ${TOKEN_AUTH0}` }
 }
+
 
 router.get('/', async (req, res, next) => {
 
@@ -45,5 +48,28 @@ router.get('/:id', async (req, res, next) => {
 
 })
 
+router.post('/', async (req, res, next)=>{
+    const {email,password,fullName, name, lastName, nickname } = req.body
+   
+    
+    const body = {
+        "email": email,
+        // "user_metadata": {},
+        // "blocked": false,
+        // "email_verified": false,
+        // "app_metadata": {},
+        "given_name": name,
+        "family_name": lastName,
+        "name": fullName,
+        "nickname":nickname,
+        "picture": "https://secure.gravatar.com/avatar/15626c5e0c749cb912f9d1ad48dba440?s=480&r=pg&d=https%3A%2F%2Fssl.gstatic.com%2Fs2%2Fprofiles%2Fimages%2Fsilhouette80.png",
+        "connection": connection,
+        "password": password,
+        // "verify_email": false
+      };
+
+    const response = await axios.post(`${auth0ApiUrl}/users`, body, { headers})
+    res.json(response.data)
+})
 
 module.exports = router;
