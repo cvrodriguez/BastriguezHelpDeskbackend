@@ -49,7 +49,9 @@ router.get('/:id', async (req, res, next) => {
 })
 
 router.post('/', async (req, res, next)=>{
-    const {email,password,fullName, name, lastName, nickname } = req.body
+    try {
+    const {email,password, name, given_name, family_name, nickname } = req.body
+    // console.log("request body", req.body)
    
     
     const body = {
@@ -58,18 +60,26 @@ router.post('/', async (req, res, next)=>{
         // "blocked": false,
         // "email_verified": false,
         // "app_metadata": {},
-        "given_name": name,
-        "family_name": lastName,
-        "name": fullName,
-        "nickname":nickname,
+        "given_name": given_name,
+        "family_name": family_name,
+        "name": name,
+        "nickname": nickname,
         "picture": "https://secure.gravatar.com/avatar/15626c5e0c749cb912f9d1ad48dba440?s=480&r=pg&d=https%3A%2F%2Fssl.gstatic.com%2Fs2%2Fprofiles%2Fimages%2Fsilhouette80.png",
         "connection": connection,
         "password": password,
         // "verify_email": false
       };
 
+      console.log("body", body)
+
+
     const response = await axios.post(`${auth0ApiUrl}/users`, body, { headers})
+    // console.log("post response", response)
     res.json(response.data)
+    } catch (e){
+        console.log(e.message)
+        next(e)
+    }
 })
 
 module.exports = router;
