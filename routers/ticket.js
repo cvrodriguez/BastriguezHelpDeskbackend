@@ -22,6 +22,39 @@ router.get('/tickets', async (req, res, next) => {
     }
 })
 
+router.get('/tickets/filters', async (req, res, next) => {
+    const { severity, state } = req.query
+
+    try {
+        let response = []
+        if (!severity && !state) {
+            response = await Ticket.findAll()
+        } else if (!severity && state) {
+            response = await Ticket.findAll(
+                { where: { state: state } })
+        } else if (!state && severity) {
+            response = await Ticket.findAll(
+                { where: { severity: severity } })
+        } else if (severity && state) {
+            response = await Ticket.findAll({
+                where: {
+                    severity: severity, state: state
+                }
+            })
+        }
+
+        if (!response) {
+            res.status(404).send("Tickets  does not exist");
+        }
+        
+        res.json(response)
+
+    } catch (error) {
+        console.log(error)
+    }
+})
+
+
 router.post('/tickets', async (req, res, next) => {
     try {
         const { subject, description, severity, state, assignedTo, reportedBy } = req.body
