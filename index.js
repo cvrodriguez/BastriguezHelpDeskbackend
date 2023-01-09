@@ -9,7 +9,7 @@ const ticketRouter = require('./routers/ticket')
 const commentRouter = require('./routers/comment')
 
 //constants
-const { PORT } = require("./config/constants");
+const { PORT } = require("./constants");
 
 // Create an express app
 const app = express();

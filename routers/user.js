@@ -1,4 +1,4 @@
-const { TOKEN_AUTH0 } = require("../config/constants");
+const { TOKEN_AUTH0 } = require("../constants");
 const { Router } = require("express");
 const axios = require('axios')
 const router = new Router
